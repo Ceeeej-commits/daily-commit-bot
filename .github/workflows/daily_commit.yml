@@ -19,11 +19,16 @@ jobs:
       - name: Make a change
         run: |
           echo "$(date)" >> daily_log.txt
-
       - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           git config --global user.name "GitHub Action Bot"
           git config --global user.email "github-actions@github.com"
           git add daily_log.txt
-          git commit -m "Daily commit: $(date)"
-          git push
+          git commit -m "Daily commit: $(date)" || exit 0
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git main
+
+
+      
+           
